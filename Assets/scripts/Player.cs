@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Player : MonoBehaviour
 {
@@ -17,8 +18,17 @@ public class Player : MonoBehaviour
     [SerializeField]
     Transform cameraTransform;
 
+    [SerializeField]
+    Text ammoText;
+
     private List<Skill> skills = new List<Skill>();
     private DashSkill dashSkill;
+
+    [SerializeField]
+    int maxAmmo = 10;
+    private int currentAmmo;
+    private bool isReloading = false;
+    private float reloadTime = 2f;
 
     float verticalRotation = 0f;
 
@@ -30,6 +40,9 @@ public class Player : MonoBehaviour
 
         dashSkill = gameObject.AddComponent<DashSkill>();
         skills.Add(dashSkill);
+
+        currentAmmo = maxAmmo;
+        UpdateAmmoText();
     }
 
     void Update()
@@ -74,20 +87,53 @@ public class Player : MonoBehaviour
             dashSkill.Activate(moveDirection.normalized);
         }
 
-        if (Input.GetKeyDown(KeyCode.Mouse0))
+        if (Input.GetKeyDown(KeyCode.R))
         {
-            RaycastHit hit;
-            Vector3 fwd = cameraTransform.forward;
+            StartCoroutine(Reload());
+        }
 
-            if (Physics.Raycast(cameraTransform.position, fwd, out hit, shootRange))
+        if (Input.GetKeyDown(KeyCode.Mouse0) && !isReloading)
+        {
+            if (currentAmmo > 1)
             {
-                if (hit.collider != null && hit.collider.CompareTag("enemy"))
-                {
-                    Debug.Log("Acertou o inimigo!");
-                    StartCoroutine(HitEffect(hit.collider.gameObject));
-                }
+                Shoot();
+            }
+            else
+            {
+                StartCoroutine(Reload());
             }
         }
+    }
+
+    void Shoot()
+    {
+        currentAmmo--;
+        UpdateAmmoText();
+        Debug.Log("Balas restantes: " + currentAmmo);
+
+        RaycastHit hit;
+        Vector3 fwd = cameraTransform.forward;
+
+        if (Physics.Raycast(cameraTransform.position, fwd, out hit, shootRange))
+        {
+            if (hit.collider != null && hit.collider.CompareTag("enemy"))
+            {
+                Debug.Log("Acertou o inimigo!");
+                StartCoroutine(HitEffect(hit.collider.gameObject));
+            }
+        }
+    }
+
+    private IEnumerator Reload()
+    {
+        isReloading = true;
+        UpdateAmmoText();
+        Debug.Log("Recarregando...");
+        yield return new WaitForSeconds(reloadTime); 
+        currentAmmo = maxAmmo;
+        isReloading = false;
+        UpdateAmmoText();
+        Debug.Log("Recarga completa. Balas: " + currentAmmo);
     }
 
     private IEnumerator HitEffect(GameObject enemy)
@@ -99,6 +145,18 @@ public class Player : MonoBehaviour
             enemyRenderer.material.color = Color.red;
             yield return new WaitForSeconds(0.1f);
             enemyRenderer.material.color = originalColor;
+        }
+    }
+
+    void UpdateAmmoText()
+    {
+        if (isReloading)
+        {
+            ammoText.text = "Recarregando...";
+        }
+        else
+        {
+            ammoText.text = "Balas: " + currentAmmo;
         }
     }
 }
