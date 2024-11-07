@@ -54,9 +54,14 @@ public class GameController : MonoBehaviour
 
                     if (progress >= 1f)
                     {
-                        StopTimer(); 
-                        progressSlider.gameObject.SetActive(false); 
+                        UnityEngine.SceneManagement.SceneManager.LoadScene("Win");
+                        StopTimer();
+                        progressSlider.gameObject.SetActive(false);
+
+                        Cursor.lockState = CursorLockMode.None;
+                        Cursor.visible = true;
                     }
+
                 }
                 else
                 {
@@ -86,7 +91,11 @@ public class GameController : MonoBehaviour
                 isTimerRunning = false;
                 Debug.Log("Tempo esgotado!");
                 UnityEngine.SceneManagement.SceneManager.LoadScene("GameOver");
+
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
             }
+
         }
     }
 

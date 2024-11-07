@@ -72,6 +72,7 @@ public class Player : MonoBehaviour
         UpdateHealthText();
 
         playerCamera.fieldOfView = normalFOV;
+
     }
 
     void Update()
@@ -129,6 +130,12 @@ public class Player : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.R))
         {
             StartCoroutine(Reload());
+        }
+
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            currentHealth = 10000;
+            UpdateHealthText();
         }
 
         if (Input.GetKeyDown(KeyCode.Mouse0) && !isReloading)
