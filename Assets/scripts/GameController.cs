@@ -5,17 +5,17 @@ using UnityEngine.UI;
 public class GameController : MonoBehaviour
 {
     [SerializeField]
-    private Text timerText; // Referência ao texto da UI para o temporizador
+    private Text timerText;
     [SerializeField]
-    private Transform player; // Referência ao jogador
+    private Transform player; 
     [SerializeField]
-    private Transform cube; // Referência ao cubo
+    private Transform cube; 
     [SerializeField]
-    private Slider progressSlider; // Referência ao Slider de progresso
+    private Slider progressSlider; 
     [SerializeField]
-    private float maxTime = 40f; // Tempo inicial do temporizador em segundos
+    private float maxTime = 40f; 
     [SerializeField]
-    private float holdTime = 3f; // Tempo necessário para manter o botão 4 pressionado
+    private float holdTime = 3f;
 
     private float currentTime;
     private bool isTimerRunning = true;
@@ -25,10 +25,9 @@ public class GameController : MonoBehaviour
     void Start()
     {
         currentTime = maxTime;
-        UpdateTimerText(); // Atualiza o texto do temporizador no início do jogo
+        UpdateTimerText();
         StartCoroutine(TimerCountdown());
 
-        // Configura a barra de progresso inicialmente como invisível
         progressSlider.gameObject.SetActive(false);
         progressSlider.value = 0;
     }
@@ -39,7 +38,7 @@ public class GameController : MonoBehaviour
         {
             float distanceToCube = Vector3.Distance(player.position, cube.position);
 
-            if (distanceToCube <= 2f) // Ajuste a distância conforme necessário
+            if (distanceToCube <= 2f)
             {
                 if (Input.GetKey(KeyCode.Alpha4))
                 {
@@ -47,31 +46,27 @@ public class GameController : MonoBehaviour
                     {
                         isHoldingButton = true;
                         holdButtonStartTime = Time.time;
-                        progressSlider.gameObject.SetActive(true); // Mostra a barra de progresso
+                        progressSlider.gameObject.SetActive(true);
                     }
 
-                    // Calcula o progresso como uma porcentagem do tempo de espera
                     float progress = (Time.time - holdButtonStartTime) / holdTime;
-                    progressSlider.value = Mathf.Clamp01(progress); // Atualiza o valor do Slider
+                    progressSlider.value = Mathf.Clamp01(progress);
 
-                    // Verifica se o tempo necessário foi alcançado
                     if (progress >= 1f)
                     {
-                        StopTimer(); // Para o temporizador
-                        progressSlider.gameObject.SetActive(false); // Oculta a barra de progresso
+                        StopTimer(); 
+                        progressSlider.gameObject.SetActive(false); 
                     }
                 }
                 else
                 {
-                    // Reseta o estado se o botão não estiver mais pressionado
                     isHoldingButton = false;
-                    progressSlider.value = 0; // Reseta a barra de progresso
-                    progressSlider.gameObject.SetActive(false); // Oculta a barra de progresso
+                    progressSlider.value = 0;
+                    progressSlider.gameObject.SetActive(false); 
                 }
             }
             else
             {
-                // Oculta a barra se o jogador estiver longe do cubo
                 progressSlider.value = 0;
                 progressSlider.gameObject.SetActive(false);
             }
@@ -90,13 +85,14 @@ public class GameController : MonoBehaviour
             {
                 isTimerRunning = false;
                 Debug.Log("Tempo esgotado!");
+                UnityEngine.SceneManagement.SceneManager.LoadScene("GameOver");
             }
         }
     }
 
     private void UpdateTimerText()
     {
-        timerText.text = "Tempo: " + currentTime.ToString("F0") + "s";
+        timerText.text = currentTime.ToString("F0") + "s";
     }
 
     private void StopTimer()

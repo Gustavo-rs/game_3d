@@ -17,12 +17,20 @@ public class Player : MonoBehaviour
     float shootRange = 100f;
     [SerializeField]
     Transform cameraTransform;
-
+    [SerializeField]
+    Camera playerCamera;
     [SerializeField]
     Text ammoText;
+    [SerializeField]
+    Text healthText;
+
+    [SerializeField]
+    GameObject wallPrefab;
 
     private List<Skill> skills = new List<Skill>();
     private DashSkill dashSkill;
+    private VerticalDashSkill verticalDashSkill;
+    private WallSkill wallSkill;
 
     [SerializeField]
     int maxAmmo = 10;
@@ -31,6 +39,15 @@ public class Player : MonoBehaviour
     private float reloadTime = 2f;
 
     float verticalRotation = 0f;
+
+    [SerializeField]
+    float normalFOV = 60f;
+    [SerializeField]
+    float zoomFOV = 30f;
+
+    [SerializeField]
+    int maxHealth = 50;
+    private int currentHealth;
 
     void Start()
     {
@@ -41,8 +58,20 @@ public class Player : MonoBehaviour
         dashSkill = gameObject.AddComponent<DashSkill>();
         skills.Add(dashSkill);
 
+        verticalDashSkill = gameObject.AddComponent<VerticalDashSkill>();
+        skills.Add(verticalDashSkill);
+
+        wallSkill = gameObject.AddComponent<WallSkill>();
+        wallSkill.SetWallPrefab(wallPrefab);
+        skills.Add(wallSkill);
+
         currentAmmo = maxAmmo;
         UpdateAmmoText();
+
+        currentHealth = maxHealth;
+        UpdateHealthText();
+
+        playerCamera.fieldOfView = normalFOV;
     }
 
     void Update()
@@ -87,6 +116,16 @@ public class Player : MonoBehaviour
             dashSkill.Activate(moveDirection.normalized);
         }
 
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            verticalDashSkill.Activate();
+        }
+
+        if (Input.GetKeyDown(KeyCode.C))
+        {
+            wallSkill.Activate();
+        }
+
         if (Input.GetKeyDown(KeyCode.R))
         {
             StartCoroutine(Reload());
@@ -102,6 +141,20 @@ public class Player : MonoBehaviour
             {
                 StartCoroutine(Reload());
             }
+        }
+
+        HandleZoom();
+    }
+
+    void HandleZoom()
+    {
+        if (Input.GetKey(KeyCode.Mouse1))
+        {
+            playerCamera.fieldOfView = zoomFOV;
+        }
+        else
+        {
+            playerCamera.fieldOfView = normalFOV;
         }
     }
 
@@ -129,7 +182,7 @@ public class Player : MonoBehaviour
         isReloading = true;
         UpdateAmmoText();
         Debug.Log("Recarregando...");
-        yield return new WaitForSeconds(reloadTime); 
+        yield return new WaitForSeconds(reloadTime);
         currentAmmo = maxAmmo;
         isReloading = false;
         UpdateAmmoText();
@@ -145,6 +198,32 @@ public class Player : MonoBehaviour
             enemyRenderer.material.color = Color.red;
             yield return new WaitForSeconds(0.1f);
             enemyRenderer.material.color = originalColor;
+        }
+
+        EnemyHealth enemyHealth = enemy.GetComponent<EnemyHealth>();
+        if (enemyHealth != null)
+        {
+            enemyHealth.TakeHit();
+        }
+    }
+
+    public void TakeDamage(int damage)
+    {
+        currentHealth -= damage;
+        Debug.Log("Vida Atual: " + currentHealth);
+        UpdateHealthText();
+
+        if (currentHealth <= 0)
+        {
+            UnityEngine.SceneManagement.SceneManager.LoadScene("GameOver");
+        }
+    }
+
+    void UpdateHealthText()
+    {
+        if (healthText != null)
+        {
+            healthText.text = "Vida: " + currentHealth;
         }
     }
 

@@ -14,10 +14,18 @@ public class Enemy : MonoBehaviour
 
     private float nextShootTime; // Tempo do próximo tiro
 
+    private Player playerScript; // Referência ao script do jogador
+
     void Start()
     {
         Time.timeScale = 1f; // Garante que o tempo está na escala normal
         SetNextShootTime(); // Define o primeiro intervalo de tiro
+
+        // Obtém o componente Player do objeto Transform do jogador
+        if (player != null)
+        {
+            playerScript = player.GetComponent<Player>();
+        }
     }
 
     void Update()
@@ -48,6 +56,12 @@ public class Enemy : MonoBehaviour
                 if (hit.collider.CompareTag("Player"))
                 {
                     Debug.Log("O inimigo acertou você!");
+
+                    // Verifica se o playerScript não é nulo antes de chamar TakeDamage
+                    if (playerScript != null)
+                    {
+                        playerScript.TakeDamage(1); // Reduz 1 ponto de vida do jogador
+                    }
                 }
                 else
                 {

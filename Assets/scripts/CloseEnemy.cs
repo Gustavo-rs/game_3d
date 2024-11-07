@@ -14,10 +14,18 @@ public class CloseEnemy : MonoBehaviour
     private NavMeshAgent agent; // Referência ao NavMeshAgent do inimigo
     private bool isAttacking = false; // Indica se o inimigo está causando dano
 
+    private Player playerScript; // Referência ao script do jogador
+
     void Start()
     {
         agent = GetComponent<NavMeshAgent>(); // Obtém o NavMeshAgent
         agent.stoppingDistance = attackRange; // Define a distância mínima de ataque
+
+        // Obtém o componente Player no Transform do jogador
+        if (player != null)
+        {
+            playerScript = player.GetComponent<Player>();
+        }
     }
 
     void Update()
@@ -35,19 +43,26 @@ public class CloseEnemy : MonoBehaviour
     private IEnumerator AttackPlayer()
     {
         isAttacking = true;
+
         while (isAttacking)
         {
-            Debug.Log("O CloseEnemy encostou em você e causou dano!");
-            yield return new WaitForSeconds(damageInterval); // Aguarda o intervalo de dano
-        }
-    }
+            // Verifica a distância do jogador a cada intervalo de dano
+            if (Vector3.Distance(transform.position, player.position) <= attackRange)
+            {
+                if (playerScript != null)
+                {
+                    playerScript.TakeDamage(1); // Causa 1 ponto de dano ao jogador
+                    Debug.Log("O CloseEnemy encostou em você e causou dano!");
+                }
+            }
+            else
+            {
+                // Para de atacar se o jogador sair do alcance
+                isAttacking = false;
+                Debug.Log("O CloseEnemy parou de atacar pois o jogador está fora do alcance.");
+            }
 
-    private void OnTriggerExit(Collider other)
-    {
-        // Para de causar dano se o jogador se afastar
-        if (other.CompareTag("Player"))
-        {
-            isAttacking = false;
+            yield return new WaitForSeconds(damageInterval); // Aguarda o intervalo de dano
         }
     }
 }
