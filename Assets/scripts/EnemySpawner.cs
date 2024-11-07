@@ -5,9 +5,8 @@ public class EnemySpawner : MonoBehaviour
 {
     public GameObject enemyPrefab;
     public int enemyCount = 5;
-    public float spawnInterval = 4f; // Intervalo de 4 segundos
+    public float spawnInterval = 4f;
 
-    // Definindo os limites com base nas coordenadas fornecidas
     private Vector3 minPosition = new Vector3(1.08f, -0.62f, -65.528f);
     private Vector3 maxPosition = new Vector3(19.48f, -0.59f, -38.36f);
 
@@ -27,9 +26,9 @@ public class EnemySpawner : MonoBehaviour
             );
 
             GameObject enemy = Instantiate(enemyPrefab, randomPosition, Quaternion.identity);
-            enemy.tag = "enemy"; // Define a tag "enemy" para o inimigo instanciado
+            enemy.tag = "enemy";
 
-            yield return new WaitForSeconds(spawnInterval); // Espera 4 segundos antes de instanciar o próximo inimigo
+            yield return new WaitForSeconds(spawnInterval);
         }
     }
 }

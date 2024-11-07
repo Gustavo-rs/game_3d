@@ -9,4 +9,10 @@ public class StartGameManager : MonoBehaviour
         UnityEngine.SceneManagement.SceneManager.LoadScene("MainScene");
 
     }
+
+    public void Bonus()
+    {
+        UnityEngine.SceneManagement.SceneManager.LoadScene("Bonus");
+
+    }
 }

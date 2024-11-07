@@ -5,38 +5,49 @@ using UnityEngine.AI;
 public class CloseEnemy : MonoBehaviour
 {
     [SerializeField]
-    private Transform player; // Referência ao Transform do jogador
+    private Transform player;
     [SerializeField]
-    private float attackRange = 1.5f; // Distância mínima para o ataque
+    private float attackRange = 1.5f;
     [SerializeField]
-    private float damageInterval = 2f; // Intervalo entre danos quando encostar no jogador
+    private float damageInterval = 2f;
 
-    private NavMeshAgent agent; // Referência ao NavMeshAgent do inimigo
-    private bool isAttacking = false; // Indica se o inimigo está causando dano
+    private NavMeshAgent agent;
+    private bool isAttacking = false;
 
-    private Player playerScript; // Referência ao script do jogador
+    private Player playerScript;
 
     void Start()
     {
-        agent = GetComponent<NavMeshAgent>(); // Obtém o NavMeshAgent
-        agent.stoppingDistance = attackRange; // Define a distância mínima de ataque
+        agent = GetComponent<NavMeshAgent>();
+        agent.stoppingDistance = attackRange;
 
-        // Obtém o componente Player no Transform do jogador
         if (player != null)
         {
             playerScript = player.GetComponent<Player>();
+        }
+
+        // Verifica se o agente está em um NavMesh
+        if (!agent.isOnNavMesh)
+        {
+            Debug.LogError("CloseEnemy não está posicionado no NavMesh!");
         }
     }
 
     void Update()
     {
-        // Define o destino do agente como a posição do jogador
-        agent.SetDestination(player.position);
-
-        // Verifica se o inimigo está próximo o suficiente para atacar
-        if (agent.remainingDistance <= attackRange && !isAttacking)
+        // Verifica se o agente está em um NavMesh antes de definir o destino
+        if (agent.isOnNavMesh)
         {
-            StartCoroutine(AttackPlayer());
+            agent.SetDestination(player.position);
+
+            if (agent.remainingDistance <= attackRange && !isAttacking)
+            {
+                StartCoroutine(AttackPlayer());
+            }
+        }
+        else
+        {
+            Debug.LogWarning("O agente não está no NavMesh.");
         }
     }
 
@@ -46,23 +57,21 @@ public class CloseEnemy : MonoBehaviour
 
         while (isAttacking)
         {
-            // Verifica a distância do jogador a cada intervalo de dano
             if (Vector3.Distance(transform.position, player.position) <= attackRange)
             {
                 if (playerScript != null)
                 {
-                    playerScript.TakeDamage(1); // Causa 1 ponto de dano ao jogador
+                    playerScript.TakeDamage(1);
                     Debug.Log("O CloseEnemy encostou em você e causou dano!");
                 }
             }
             else
             {
-                // Para de atacar se o jogador sair do alcance
                 isAttacking = false;
                 Debug.Log("O CloseEnemy parou de atacar pois o jogador está fora do alcance.");
             }
 
-            yield return new WaitForSeconds(damageInterval); // Aguarda o intervalo de dano
+            yield return new WaitForSeconds(damageInterval);
         }
     }
 }

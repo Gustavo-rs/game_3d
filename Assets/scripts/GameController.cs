@@ -22,6 +22,10 @@ public class GameController : MonoBehaviour
     private bool isHoldingButton = false;
     private float holdButtonStartTime;
 
+    [SerializeField]
+    private Player playerScript;
+
+
     void Start()
     {
         currentTime = maxTime;
@@ -40,7 +44,7 @@ public class GameController : MonoBehaviour
 
             if (distanceToCube <= 2f)
             {
-                if (Input.GetKey(KeyCode.Alpha4))
+                if (Input.GetKey(KeyCode.Alpha4) && !playerScript.tookDamage)
                 {
                     if (!isHoldingButton)
                     {
@@ -61,13 +65,12 @@ public class GameController : MonoBehaviour
                         Cursor.lockState = CursorLockMode.None;
                         Cursor.visible = true;
                     }
-
                 }
                 else
                 {
                     isHoldingButton = false;
                     progressSlider.value = 0;
-                    progressSlider.gameObject.SetActive(false); 
+                    progressSlider.gameObject.SetActive(false);
                 }
             }
             else

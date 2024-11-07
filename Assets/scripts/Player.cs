@@ -49,8 +49,21 @@ public class Player : MonoBehaviour
     int maxHealth = 50;
     private int currentHealth;
 
+    [SerializeField]
+    private Image damageOverlay;
+
+    [SerializeField]
+    private float damageOverlayDuration = 0.2f;
+
+    public bool tookDamage { get; private set; } = false;
+
     void Start()
     {
+        if (damageOverlay != null)
+        {
+            damageOverlay.gameObject.SetActive(false);
+        }
+
         rd.freezeRotation = true;
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
@@ -138,6 +151,14 @@ public class Player : MonoBehaviour
             UpdateHealthText();
         }
 
+        if (Input.GetKeyDown(KeyCode.M))
+        {
+            UnityEngine.SceneManagement.SceneManager.LoadScene("Win");
+
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
+
         if (Input.GetKeyDown(KeyCode.Mouse0) && !isReloading)
         {
             if (currentAmmo > 1)
@@ -220,10 +241,33 @@ public class Player : MonoBehaviour
         Debug.Log("Vida Atual: " + currentHealth);
         UpdateHealthText();
 
+        tookDamage = true;
+        StartCoroutine(ResetDamageFlag());
+
+        StartCoroutine(ShowDamageOverlay());
+
         if (currentHealth <= 0)
         {
             UnityEngine.SceneManagement.SceneManager.LoadScene("GameOver");
         }
+    }
+
+    private IEnumerator ShowDamageOverlay()
+    {
+        if (damageOverlay != null)
+        {
+            damageOverlay.gameObject.SetActive(true);
+            yield return new WaitForSeconds(damageOverlayDuration);
+            damageOverlay.gameObject.SetActive(false);
+        }
+    }
+
+
+
+    private IEnumerator ResetDamageFlag()
+    {
+        yield return new WaitForSeconds(0.1f);
+        tookDamage = false;
     }
 
     void UpdateHealthText()

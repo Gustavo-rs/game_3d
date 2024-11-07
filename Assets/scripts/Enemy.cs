@@ -30,12 +30,20 @@ public class Enemy : MonoBehaviour
 
     void Update()
     {
+        // Faz o inimigo apontar para o jogador
+        if (player != null)
+        {
+            transform.LookAt(player.position);
+        }
+
+        // Realiza o disparo se estiver na hora
         if (Time.time >= nextShootTime)
         {
             AttemptShoot();
             SetNextShootTime(); // Redefine o próximo intervalo de tiro
         }
     }
+
 
     private void SetNextShootTime()
     {

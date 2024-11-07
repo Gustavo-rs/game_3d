@@ -1472,6 +1472,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: enemy_knife 1 (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 5216354551708651508, guid: 7684d503833a88640b05b1a1bdb9999d, type: 3}
+      propertyPath: player
+      value: 
+      objectReference: {fileID: 1004569384}
     - target: {fileID: 5431932498487270480, guid: 7684d503833a88640b05b1a1bdb9999d, type: 3}
       propertyPath: m_LocalPosition.x
       value: -6.03
@@ -2881,6 +2885,7 @@ MonoBehaviour:
   progressSlider: {fileID: 1916295828}
   maxTime: 200
   holdTime: 3
+  playerScript: {fileID: 0}
 --- !u!4 &264825056
 Transform:
   m_ObjectHideFlags: 0
@@ -2909,7 +2914,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemyPrefab: {fileID: 729971326417497318}
-  enemyCount: 10
+  enemyCount: 30
   spawnInterval: 5
 --- !u!1001 &265196778
 PrefabInstance:
@@ -4800,7 +4805,7 @@ MonoBehaviour:
   m_OverrideVoxelSize: 0
   m_VoxelSize: 0.16666667
   m_MinRegionArea: 2
-  m_NavMeshData: {fileID: 23800000, guid: 36d2d362b42b81a48adc2efdf19253f8, type: 2}
+  m_NavMeshData: {fileID: 23800000, guid: f60722075ac887d4a8dbb9ba1cefa2be, type: 2}
   m_BuildHeightMesh: 0
 --- !u!64 &375194870
 MeshCollider:
@@ -14143,6 +14148,7 @@ GameObject:
   - component: {fileID: 1004569381}
   - component: {fileID: 1004569385}
   - component: {fileID: 1004569386}
+  - component: {fileID: 1004569387}
   m_Layer: 0
   m_Name: player
   m_TagString: Player
@@ -14230,7 +14236,7 @@ Transform:
   m_GameObject: {fileID: 1004569380}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: -0.7071068, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 8.07, y: 2.86, z: -38.36}
+  m_LocalPosition: {x: 8.07, y: 1.13, z: -40.275}
   m_LocalScale: {x: 0.1, y: 1, z: 0.4}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -14263,6 +14269,8 @@ MonoBehaviour:
   normalFOV: 60
   zoomFOV: 30
   maxHealth: 50
+  damageOverlay: {fileID: 0}
+  damageOverlayDuration: 0.2
 --- !u!54 &1004569386
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -14290,6 +14298,18 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &1004569387
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1004569380}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6aceade072345e244be5a10b87618480, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1010457100
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -17607,6 +17627,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: enemy_knife 1
       objectReference: {fileID: 0}
+    - target: {fileID: 5216354551708651508, guid: 7684d503833a88640b05b1a1bdb9999d, type: 3}
+      propertyPath: player
+      value: 
+      objectReference: {fileID: 1004569384}
     - target: {fileID: 5431932498487270480, guid: 7684d503833a88640b05b1a1bdb9999d, type: 3}
       propertyPath: m_LocalPosition.x
       value: -6.871
